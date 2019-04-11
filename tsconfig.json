@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "module": "esnext",
+    "target": "es5",
+    "lib": [
+      "dom",
+      "es6",
+      "es5",
+      "es2015",
+      "es2017"
+    ],
+    "strict": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "forceConsistentCasingInFileNames": true,
+    "sourceMap": true,
+    "outDir": "dist/esm",
+    "declaration": true,
+    "declarationMap": true,
+    "stripInternal": true,
+    "resolveJsonModule": true,
+    "importHelpers": true,
+    "experimentalDecorators": true
+  },
+  "include": [
+    "./src"
+  ],
+  "exclude": [
+    "node_modules",
+    "src/**/__tests__",
+    "src/**/*.spec.ts",
+    "src/**/*.test.ts"
+  ],
+  "compileOnSave": false,
+  "buildOnSave": false
+}

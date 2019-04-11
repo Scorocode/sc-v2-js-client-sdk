@@ -1,0 +1,140 @@
+{
+  "name": "@scorocode/client-sdk",
+  "version": "1.3.0",
+  "description": "Scorocode v2 JS Client SDK",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "browser": {
+    "./dist/cjs/request/index.js": "./dist/cjs/request/index.browser.js",
+    "./dist/esm/request/index.js": "./dist/esm/request/index.browser.js"
+  },
+  "types": "dist/cjs/index.d.ts",
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Scorocode/sc-v2-js-client-sdk"
+  },
+  "author": "Scorocode <scorocode@gmail.com> (https://scorocode.ru)",
+  "license": "Apache-2.0",
+  "homepage": "https://scorocode.ru",
+  "engines": {
+    "node": ">=8"
+  },
+  "scripts": {
+    "prebuild": "shx rm -rf dist bundles types coverage docs package",
+    "build": "gulp build",
+    "postbuild": "npm run size",
+    "docs": "typedoc -p . --theme minimal --target 'es6' --excludeNotExported --excludePrivate --ignoreCompilerErrors --exclude \"**/src/**/__tests__/*.*\" --out docs src/",
+    "serve": "nodemon --watch mock ./mock/server/index.js",
+    "test": "jest -c ./config/jest.config.js",
+    "test:watch": "npm run test -- --watch",
+    "test:coverage": "npm run test -- --coverage",
+    "test:ci": "npm run test -- --ci",
+    "verify": "npm run style && npm run test:ci",
+    "commit": "git-cz",
+    "style": "npm run format -- --list-different && npm run lint",
+    "style:fix": "npm run format:fix && npm run lint:fix",
+    "format": "prettier --config config/prettier.config.js \"**/*.{ts,tsx,js,jsx,css,scss,sass,less,md}\"",
+    "format:fix": "npm run format -- --write",
+    "lint": "tslint --project tsconfig.json --format codeFrame",
+    "lint:fix": "npm run lint -- --fix",
+    "prerelease": "npm run verify",
+    "release": "standard-version",
+    "postrelease": "npm run build && npm run release:github && npm run release:npm",
+    "release:github": "git push --no-verify --follow-tags origin master",
+    "release:npm": "npm publish",
+    "size": "shx echo \"Gzipped IIEF bundle Size: $(ls -lah \"./bundles/scorocode.js.gz\" | awk -F \" \" {'print $5'})\""
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    },
+    "validate-commit-msg": {
+      "types": "conventional-commit-types",
+      "maxSubjectLength": 120
+    }
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "validate-commit-msg",
+      "pre-commit": "lint-staged",
+      "pre-push": "npm run style && npm test"
+    }
+  },
+  "lint-staged": {
+    "**/*.{ts,tsx,js,jsx,css,scss,sass,less,md}": [
+      "prettier --config config/prettier.config.js --write",
+      "git add"
+    ],
+    "src/**/*.{ts,tsx}": [
+      "npm run lint:fix",
+      "git add"
+    ]
+  },
+  "standard-version": {
+    "skip": {
+      "changelog": true
+    }
+  },
+  "peerDependencies": {
+    "tslib": ">=1.9.0",
+    "typescript": ">=3.4.0"
+  },
+  "dependencies": {
+    "form-data": "2.3.2",
+    "isomorphic-ws": "4.0.1",
+    "lodash": "4.17.11",
+    "node-fetch": "2.2.0",
+    "qs": "6.5.2",
+    "ws": "6.1.0"
+  },
+  "devDependencies": {
+    "@types/deep-extend": "0.4.31",
+    "@types/form-data": "2.2.1",
+    "@types/jest": "24.0.11",
+    "@types/node": "10.3.2",
+    "@types/node-fetch": "2.1.2",
+    "@types/prettier": "1.13.1",
+    "@types/qs": "6.5.1",
+    "@types/ws": "6.0.1",
+    "awesome-typescript-loader": "5.0.0",
+    "body-parser": "1.18.3",
+    "commitizen": "2.10.1",
+    "cors": "2.8.4",
+    "cross-var": "1.1.0",
+    "cz-conventional-changelog": "2.1.0",
+    "express": "4.16.3",
+    "gulp": "^4.0.0",
+    "gulp-gzip": "1.4.2",
+    "gulp-replace": "1.0.0",
+    "gulp-sourcemaps": "2.6.4",
+    "gulp-typescript": "5.0.1",
+    "gzip-size-cli": "2.1.0",
+    "husky": "1.0.0-rc.8",
+    "jest": "24.7.1",
+    "lint-staged": "8.1.0",
+    "merge2": "1.2.2",
+    "multer": "1.4.0",
+    "nodemon": "1.18.4",
+    "npm-run-all": "4.1.3",
+    "prettier": "1.15.3",
+    "rollup": "0.66.4",
+    "rollup-plugin-commonjs": "9.1.8",
+    "rollup-plugin-json": "3.1.0",
+    "rollup-plugin-node-resolve": "3.4.0",
+    "rollup-plugin-uglify": "6.0.0",
+    "shx": "0.3.0",
+    "socket.io": "2.2.0",
+    "standard-version": "4.4.0",
+    "strip-json-comments-cli": "1.0.1",
+    "ts-jest": "24.0.2",
+    "tslib": "1.9.3",
+    "tslint": "5.15.0",
+    "tslint-config-prettier": "1.18.0",
+    "tslint-config-standard": "8.0.1",
+    "typedoc": "0.11.1",
+    "typescript": "3.4.3",
+    "validate-commit-msg": "2.14.0",
+    "xhr-mock": "2.4.0"
+  }
+}
