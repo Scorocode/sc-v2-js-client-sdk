@@ -31,7 +31,7 @@ const buildModule = gulp.series(
   gulp.parallel([
     function buildCjs() {
       const tsProject = ts.createProject(
-        path.resolve(__dirname, 'tsconfig.json'),
+        path.resolve(__dirname, 'config/tsconfig.build.json'),
         {
           module: 'commonjs',
         }
@@ -50,7 +50,7 @@ const buildModule = gulp.series(
     },
     function buildEsm() {
       const tsProject = ts.createProject(
-        path.resolve(__dirname, 'tsconfig.json')
+        path.resolve(__dirname, 'config/tsconfig.build.json')
       )
       const tsResult = tsProject
         .src()

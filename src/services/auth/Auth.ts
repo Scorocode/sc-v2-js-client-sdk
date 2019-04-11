@@ -130,10 +130,12 @@ export default class Auth extends Service<AuthConfig & ServiceConfig>
       session = this._getPreservedSession()
 
       if (!session) {
+        this._setCurrentSession()
+
         return Promise.reject(
           new ScorocodeError(
             'auth.authorize.unsavedSession',
-            'Can\'t preserved user\'s session in storage'
+            "Can't preserved user's session in storage"
           )
         )
       }
@@ -151,23 +153,30 @@ export default class Auth extends Service<AuthConfig & ServiceConfig>
           return this.currentSession as any
         })
         .catch(() => {
-          this.refresh().catch((e) => {
-            this._setCurrentSession() // clear bad session
+          return this.app
+            .client()
+            .auth.refreshSession({
+              token: (session as any).refreshToken,
+            })
+            .catch(() => {
+              this._setCurrentSession() // clear bad session
 
-            return Promise.reject(
-              new ScorocodeError(
-                'auth.authorize.badSession',
-                "Can't reuse stored session"
+              return Promise.reject(
+                new ScorocodeError(
+                  'auth.authorize.badSession',
+                  "Can't reuse stored session"
+                )
               )
-            )
-          })
+            })
         })
     }
+
+    this._setCurrentSession()
 
     return Promise.reject(
       new ScorocodeError(
         'auth.authorize.undefinedSession',
-        'User\'s session is not specified'
+        "User's session is not specified"
       )
     )
   }

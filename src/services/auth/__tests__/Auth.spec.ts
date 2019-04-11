@@ -1,5 +1,6 @@
 /* tslint:disable:no-magic-numbers */
 import sc from '../../../index'
+import { Storage } from '../../../utils/Storages'
 import Session from '../Session'
 
 declare const __SC_APP_CONFIG__: any
@@ -66,8 +67,6 @@ describe('Auth integration tests', () => {
     expect(sc.app().auth().currentSession).toBe(undefined)
     expect(fn).toHaveBeenCalledTimes(3)
     expect(fn.mock.calls[2][0]).toBe(undefined)
-
-    return true
   })
 
   it('Test Auth::onSessionChanged()', async () => {
@@ -128,5 +127,52 @@ describe('Auth integration tests', () => {
       .auth()
       .authorize()
     expect(fn).toHaveBeenCalledTimes(2)
+  })
+
+  it('Test Auth::authorize() if given a bad session', async () => {
+    const fn = jest.fn()
+
+    sc.app()
+      .auth()
+      .onSessionChanged(fn)
+
+    // authorize
+    await expect(
+      sc
+        .app()
+        .auth()
+        .authorize({} as any)
+    ).rejects.toMatchObject({
+      code: 'auth.authorize.badSession',
+    })
+    expect(fn).toHaveBeenCalledTimes(1)
+  })
+
+  it('Test Auth::authorize() if session was not stored', async () => {
+    const fn = jest.fn()
+
+    const auth = await sc.app().auth({ storage: new Storage() })
+
+    auth.onSessionChanged(fn)
+
+    // authorize
+    await expect(auth.authorize()).rejects.toMatchObject({
+      code: 'auth.authorize.unsavedSession',
+    })
+    expect(fn).toHaveBeenCalledTimes(1)
+  })
+
+  it('Test Auth::authorize() no session, preserveSession=false', async () => {
+    const fn = jest.fn()
+
+    const auth = await sc.app().auth({ preserveSession: false })
+
+    auth.onSessionChanged(fn)
+
+    // authorize
+    await expect(auth.authorize()).rejects.toMatchObject({
+      code: 'auth.authorize.undefinedSession',
+    })
+    expect(fn).toHaveBeenCalledTimes(1)
   })
 })

@@ -35,8 +35,6 @@ describe('WS integration tests', () => {
     await new Promise((res) => setTimeout(res, delay))
 
     expect(fn).toHaveBeenCalledTimes(2)
-
-    return true
   })
 
   it('WS should send and receive message back', async () => {
